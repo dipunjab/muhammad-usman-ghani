@@ -5,153 +5,254 @@
 
 
 {% stylesheet %}
-    h1,h2,h3,p{
-        font-family: 'Jost', sans-serif;
+    h1, h2, h3, p {
+        font-family: 'Jost', sans-serif !important;
     }
-
-  .top-banner-brand-container {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    height: 64px;
-    padding: 10px 50px 10px 50px; 
-    background-color: #F5F5F5;
-  }
-  
-  .logo-img {
-    height: 19px;
-    width: 151px;
-    object-fit: contain;
-  }
-  .top-banner-btn {
-  position: relative;
-  width: 207px;
-  height: 44px;
-  background-color: #FFF544;
-  color: #000000;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-  cursor: pointer;
-  overflow: hidden; /* Important for the sliding effect */
-  border: none;
-  transition: color 0.3s ease;
-  z-index: 1;
-  font-family: 'Jost', sans-serif;
-  font-size: 16px;
-  text-transform: uppercase;
-}
-
-/* The Black Overlay Slide */
-.top-banner-btn::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: -100%; /* Start off-screen to the left */
-  width: 100%;
-  height: 100%;
-  background-color: #000000;
-  transition: left 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-  z-index: -1; /* Stay behind the text */
-}
-
-/* Hover States */
-.top-banner-btn:hover {
-  color: #FFFFFF; /* Change text to white */
-}
-
-.top-banner-btn:hover::before {
-  left: 0; /* Slide in to cover button */
-}
-
-/* Arrow Swap Logic */
-.arrow-container {
-  position: relative;
-  width: 24px;
-  height: 24px;
-  display: flex;
-  align-items: center;
-}
-
-.arrow-hover {
-  position: absolute;
-  opacity: 0;
-  transition: opacity 0.3s ease;
-}
-
-.top-banner-btn:hover .arrow-primary {
-  opacity: 0;
-}
-
-.top-banner-btn:hover .arrow-hover {
-  opacity: 1;
-}
-
-/* menu drawer for mobile*/
-#menu-toggle-btn:checked ~ .top-banner-brand-container .mobile-menu-drawer{
-    display: flex;
-}
-#menu-toggle-btn{
-    display: none;
-}
-.menu-toggle-label {
-    display: none;
-    cursor: pointer;
-    width: 25px;
-    height: 20px;
-    position: relative;
-    z-index: 1001;
-}
-.menu-toggle-label span {
-    display: block;
-    position: absolute;
-    height: 2px;
-    width: 100%;
-    background: #000000;
-    transition: .2s ease-in-out;
-}
-.menu-toggle-label span:nth-child(1) {top: 0}
-.menu-toggle-label span:nth-child(2) {top: 8px}
-.menu-toggle-label span:nth-child(3) {top: 16px}
-
-#menu-toggle-btn:checked ~ .top-banner-brand-container .menu-toggle-label span:nth-child(1){ transform: translateY(8px) rotate(45deg);}
-#menu-toggle-btn:checked ~ .top-banner-brand-container .menu-toggle-label span:nth-child(2){ opacity: 0;}
-#menu-toggle-btn:checked ~ .top-banner-brand-container .menu-toggle-label span:nth-child(3){transform: translateY(-8px) rotate(-45deg);}
-
-.mobile-menu-drawer {
-    display: none;
-    position: absolute;
-    top: 7%;
-    left: 0;
-    width: 100%;
-    background: #F2F2F2;
-    padding: 25px 65px 25px 65px;
-    flex-direction: column;
-    align-items: center;
-    gap: 16px;
-    
-}
-
- /*media qury for making mobile responisve  */
-@media (max-width: 1000px){
-    .top-banner-brand-container { display: grid; grid-template-columns: 1fr auto 1fr;}
-    .menu-toggle-label { display: block;}
-    .top-banner-tagline, .top-banner-btn{
-        display: none;
-    }
-    .mobile-menu-drawer .top-banner-tagline , .mobile-menu-drawer .top-banner-btn{
+    .top-banner-brand-container {
         display: flex;
-        font-size: 15px;
-        line-height: 13.42px;
+        justify-content: space-between;
+        align-items: center;
+        height: 64px;
+        padding: 10px 50px; 
+        background-color: #F5F5F5;
+        position: relative;
     }
-}    
+  
+    .logo-img {
+        height: 19px;
+        width: 151px;
+        object-fit: contain;
+    }
+
+    .top-banner-btn {
+        position: relative;
+        width: 207px;
+        height: 44px;
+        background-color: #FFF544; 
+        color: #000000;             
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        cursor: pointer;
+        overflow: hidden;
+        border: none;
+        transition: color 0.3s ease;
+        z-index: 1;
+        font-family: 'Jost', sans-serif;
+        font-size: 16px;
+        text-transform: uppercase;
+    }
+
+    .top-banner-btn::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: -100%; 
+        width: 100%;
+        height: 100%;
+        background-color: #000000; 
+        transition: left 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        z-index: -1; 
+    }
+
+    .top-banner-btn:hover { color: #FFFFFF; }
+    .top-banner-btn:hover::before { left: 0; }
+
+    .top-banner-btn.is-main {
+        background-color: #000000; 
+        color: #FFFFFF;           
+    }
+
+    .top-banner-btn.is-main::before {
+        background-color: #FFF544; 
+    }
+
+    .top-banner-btn.is-main:hover {
+        color: #000000;           
+    }
+
+    /* --- ARROW LOGIC --- */
+    .arrow-container {
+        position: relative;
+        width: 24px;
+        height: 24px;
+        display: flex;
+        align-items: center;
+    }
+
+    .arrow-hover {
+        position: absolute;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    }
+
+    .top-banner-btn:hover .arrow-primary { opacity: 0; }
+    .top-banner-btn:hover .arrow-hover   { opacity: 1; }
+
+    .top-banner-btn.is-main .arrow-primary { opacity: 0; }
+    .top-banner-btn.is-main .arrow-hover   { opacity: 1; }
+
+    .top-banner-btn.is-main:hover .arrow-primary { opacity: 1; }
+    .top-banner-btn.is-main:hover .arrow-hover   { opacity: 0; }
+
+
+    /* --- DRAWER LOGIC --- */
+    #menu-toggle-btn:checked ~ .top-banner-brand-container .mobile-menu-drawer { display: flex; }
+    #menu-toggle-btn { display: none; }
+    
+    .menu-toggle-label {
+        display: none;
+        cursor: pointer;
+        width: 25px;
+        height: 20px;
+        position: relative;
+        z-index: 1001;
+    }
+    .menu-toggle-label span {
+        display: block;
+        position: absolute;
+        height: 2px;
+        width: 100%;
+        background: #000000;
+        transition: .2s ease-in-out;
+    }
+    .menu-toggle-label span:nth-child(1) { top: 0; }
+    .menu-toggle-label span:nth-child(2) { top: 8px; }
+    .menu-toggle-label span:nth-child(3) { top: 16px; }
+
+    #menu-toggle-btn:checked ~ .top-banner-brand-container .menu-toggle-label span:nth-child(1) { transform: translateY(8px) rotate(45deg); }
+    #menu-toggle-btn:checked ~ .top-banner-brand-container .menu-toggle-label span:nth-child(2) { opacity: 0; }
+    #menu-toggle-btn:checked ~ .top-banner-brand-container .menu-toggle-label span:nth-child(3) { transform: translateY(-8px) rotate(-45deg); }
+
+    .mobile-menu-drawer {
+        display: none;
+        position: absolute;
+        top: 64px;
+        left: 0;
+        width: 100%;
+        background: #F2F2F2;
+        padding: 25px 65px;
+        flex-direction: column;
+        align-items: center;
+        gap: 16px;
+        z-index: 100;
+    }
+
+    /* --- MOBILE RESPONSIVENESS --- */
+    @media (max-width: 900px) {
+        .top-banner-brand-container { 
+            display: grid; 
+            grid-template-columns: 1fr auto 1fr;
+            padding: 23px 16px;
+            box-shadow: 0px 2px 4px 0px #00000026;
+        }
+        .menu-toggle-label { display: block; }
+        
+        .top-banner-brand-container .top-banner-tagline,
+        .top-banner-brand-container > .top-banner-btn {
+            display: none;
+        }
+
+        .mobile-menu-drawer .top-banner-tagline, 
+        .mobile-menu-drawer .top-banner-btn {
+            display: flex;
+            font-size: 15px;
+        }
+    }    
+
+    .main-banner {
+        background-size: cover;
+        background-position: center;
+        min-height: 786px;
+        display: flex;
+        align-items: center;
+        padding: 40px;
+        position: relative;
+    }
+    .main-content {
+        max-width: 550px;
+        display: flex;
+        flex-direction: column;
+        gap: 40px;
+        padding: 30px;
+        position: absolute;
+        top: 74%;
+        transform: translate(0%, -50%);
+    }
+    .main-content h1 {
+        font-size: 70px;
+        margin: 0;
+        font-weight: 500;
+        line-height: 100%;
+    }
+    .main-content p {
+        font-size: 20px;
+        margin: 0;
+        font-weight: 400;
+        line-height: 100%;
+    }
+
+    @media (max-width:900px) {
+        .main-banner {
+            flex-direction: column;
+            min-height: auto;
+            padding: 0;
+            background-image: none !important;
+        }
+        .main-content {
+            position: static;
+            transform: none;
+            width: 100%;
+            padding: 40px 20px;
+            text-align: center;
+            align-items: center;
+        }
+        .main-content h1 { font-size: 30px; }
+        
+        .mobile-image-container {
+            display: block;
+            width: 100%;
+            height: 264px;
+            position: relative; 
+            background-size: cover;
+            background-position: center;
+            order: 2;
+        }
+
+        .desktop-description, .main-banner-btn-wrapper { display: none; }
+        
+        .mobile-btn-wrapper {
+            display: flex !important;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 5;
+        }
+        .mobile-btn-wrapper .top-banner-btn {
+            display: flex !important;
+        }
+    }
+
+    @media (min-width: 901px) {
+        .mobile-image-container, .mobile-description { display: none; }
+    }
 {% endstylesheet %}
 
 {%-  liquid  
      capture top_banner_btn
         render 'custom-button', btn_text: section.settings.top_banner_btn_text, btn_link: section.settings.top_banner_btn_link  
      endcapture
+
+    
+     capture main_banner_btn
+        render 'custom-button',type:'main', btn_text: section.settings.content_btn_text, btn_link: section.settings.content_btn_link
+     endcapture
+
+
+     assign desktop_img = section.settings.bg_image 
+     assign mobile_img = section.settings.mobile_bg_image 
 -%} 
 
 <section >
@@ -189,9 +290,28 @@
             {{ top_banner_btn }}
             </div>
         </div>
+    </div>
+
+
+    {% comment %} main banner section iamge and text content overlay {% endcomment %}
+    <div class="main-banner" {% if desktop_img != blank %} style="background-image: url({{ desktop_img |  image_url: width: 2000  }});" {% endif %}>
+        
+        <div class="main-content">
+            <h1>{{ section.settings.content_heading }}</h1>
+            <p class="desktop-description">{{ section.settings.content_description }}</p>
+            <p class="mobile-description">{{ section.settings.content_mbl_description }}</p>
+            <div class="main-banner-btn-wrapper">
+                {{ main_banner_btn }}
+            </div>
         </div>
 
+        <div class="mobile-image-container" style="background-image: url({{ mobile_img |  image_url: width:1000 }});">
+            <div class="mobile-btn-wrapper">
+                {{ main_banner_btn }}ss
+            </div>
+        </div>
 
+    </div>        
 </section>
 
 {% schema %}
@@ -229,6 +349,50 @@
         {
             "type": "url",
             "id": "top_banner_btn_link",
+            "label": "Button Link",
+        },
+        {
+            "type": "header",
+            "content": "Main Banner Section"
+        },
+        {
+            "type": "image_picker",
+            "id": "bg_image",
+            "label": "Desktop Image"
+        },
+        {
+            "type": "image_picker",
+            "id": "mobile_bg_image",
+            "label": "Mobile Image",
+            "info": "If there is no mobile image then desktop image will be adjusted in mobile view."
+        },
+        {
+            "type": "text",
+            "id": "content_heading",
+            "label": "Heading",
+            "default": "The Gift Guide"
+        },
+        {
+            "type": "text",
+            "id": "content_description",
+            "label": "Description",
+            "default": "Discover Joy: Your Ultimate Holiday Gift Destination. Explore our curated selection and find the perfect gifts to delight your loved ones this holiday season."
+        },
+        {
+            "type": "text",
+            "id": "content_mbl_description",
+            "label": "Description Mobile",
+            "default": "Discover Joy: Your Ultimate Holiday Gift Destination."
+        },
+        {
+            "type": "text",
+            "id": "content_btn_text",
+            "label": "Button Text",
+            "default": "Shop Now"
+        },
+        {
+            "type": "url",
+            "id": "content_btn_link",
             "label": "Button Link",
         }
     ],

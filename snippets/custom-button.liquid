@@ -1,13 +1,17 @@
 {% comment %}
-  Usage: render 'custom-button', btn_text: section.settings.top_banner_btn_text, btn_link: '#' 
+  Usage: render 'custom-button', btn_text: 'Shop', btn_link: '#', type: 'main' (optional)
 {% endcomment %}
 <style>
-    a {
-        text-decoration: none;
-    }
+    a { text-decoration: none; }
 </style>
 
-<a href="{{ btn_link | default: '#' }}" class="top-banner-btn">
+{%- comment -%} Determine if this is the main button to add a specific class {%- endcomment -%}
+{%- assign button_class = 'top-banner-btn' -%}
+{%- if type == 'main' -%}
+  {%- assign button_class = button_class | append: ' is-main' -%}
+{%- endif -%}
+
+<a href="{{ btn_link | default: '#' }}" class="{{ button_class }}">
     <span class="btn-text">{{ btn_text }}</span>
     <span class="arrow-container">
         <img src="{{ 'Arrow 1.png' | asset_url }}" class="arrow-icon arrow-primary" width="24" height="auto" loading="lazy"/>
