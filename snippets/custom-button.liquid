@@ -1,0 +1,16 @@
+{% comment %}
+  Usage: render 'custom-button', btn_text: section.settings.top_banner_btn_text, btn_link: '#' 
+{% endcomment %}
+<style>
+    a {
+        text-decoration: none;
+    }
+</style>
+
+<a href="{{ btn_link | default: '#' }}" class="top-banner-btn">
+    <span class="btn-text">{{ btn_text }}</span>
+    <span class="arrow-container">
+        <img src="{{ 'Arrow 1.png' | asset_url }}" class="arrow-icon arrow-primary" width="24" height="auto" loading="lazy"/>
+        <img src="{{ 'Arrow 2.png' | asset_url }}" class="arrow-icon arrow-hover" width="24" height="auto" loading="lazy"/>
+    </span>
+</a>

@@ -1,24 +1,237 @@
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Jost:wght@400&display=swap" rel="stylesheet">
 
-{%  stylesheet  %}  
 
+
+{% stylesheet %}
+    h1,h2,h3,p{
+        font-family: 'Jost', sans-serif;
+    }
+
+  .top-banner-brand-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 64px;
+    padding: 10px 50px 10px 50px; 
+    background-color: #F5F5F5;
+  }
+  
+  .logo-img {
+    height: 19px;
+    width: 151px;
+    object-fit: contain;
+  }
+  .top-banner-btn {
+  position: relative;
+  width: 207px;
+  height: 44px;
+  background-color: #FFF544;
+  color: #000000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  cursor: pointer;
+  overflow: hidden; /* Important for the sliding effect */
+  border: none;
+  transition: color 0.3s ease;
+  z-index: 1;
+  font-family: 'Jost', sans-serif;
+  font-size: 16px;
+  text-transform: uppercase;
+}
+
+/* The Black Overlay Slide */
+.top-banner-btn::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%; /* Start off-screen to the left */
+  width: 100%;
+  height: 100%;
+  background-color: #000000;
+  transition: left 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: -1; /* Stay behind the text */
+}
+
+/* Hover States */
+.top-banner-btn:hover {
+  color: #FFFFFF; /* Change text to white */
+}
+
+.top-banner-btn:hover::before {
+  left: 0; /* Slide in to cover button */
+}
+
+/* Arrow Swap Logic */
+.arrow-container {
+  position: relative;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+}
+
+.arrow-hover {
+  position: absolute;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.top-banner-btn:hover .arrow-primary {
+  opacity: 0;
+}
+
+.top-banner-btn:hover .arrow-hover {
+  opacity: 1;
+}
+
+/* menu drawer for mobile*/
+#menu-toggle-btn:checked ~ .top-banner-brand-container .mobile-menu-drawer{
+    display: flex;
+}
+#menu-toggle-btn{
+    display: none;
+}
+.menu-toggle-label {
+    display: none;
+    cursor: pointer;
+    width: 25px;
+    height: 20px;
+    position: relative;
+    z-index: 1001;
+}
+.menu-toggle-label span {
+    display: block;
+    position: absolute;
+    height: 2px;
+    width: 100%;
+    background: #000000;
+    transition: .2s ease-in-out;
+}
+.menu-toggle-label span:nth-child(1) {top: 0}
+.menu-toggle-label span:nth-child(2) {top: 8px}
+.menu-toggle-label span:nth-child(3) {top: 16px}
+
+#menu-toggle-btn:checked ~ .top-banner-brand-container .menu-toggle-label span:nth-child(1){ transform: translateY(8px) rotate(45deg);}
+#menu-toggle-btn:checked ~ .top-banner-brand-container .menu-toggle-label span:nth-child(2){ opacity: 0;}
+#menu-toggle-btn:checked ~ .top-banner-brand-container .menu-toggle-label span:nth-child(3){transform: translateY(-8px) rotate(-45deg);}
+
+.mobile-menu-drawer {
+    display: none;
+    position: absolute;
+    top: 7%;
+    left: 0;
+    width: 100%;
+    background: #F2F2F2;
+    padding: 25px 65px 25px 65px;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    
+}
+
+ /*media qury for making mobile responisve  */
+@media (max-width: 1000px){
+    .top-banner-brand-container { display: grid; grid-template-columns: 1fr auto 1fr;}
+    .menu-toggle-label { display: block;}
+    .top-banner-tagline, .top-banner-btn{
+        display: none;
+    }
+    .mobile-menu-drawer .top-banner-tagline , .mobile-menu-drawer .top-banner-btn{
+        display: flex;
+        font-size: 15px;
+        line-height: 13.42px;
+    }
+}    
 {% endstylesheet %}
 
+{%-  liquid  
+     capture top_banner_btn
+        render 'custom-button', btn_text: section.settings.top_banner_btn_text, btn_link: section.settings.top_banner_btn_link  
+     endcapture
+-%} 
 
-<section>
+<section >
+    {% comment %} input to capute the menu drawer hamburger {% endcomment %}
+    <input type="checkbox" id="menu-toggle-btn">
+    {% comment %} Top Part of Page containg logo , tagline and button {% endcomment %}
+    <div class="top-banner-brand-container">  
 
-    <div class="top-banner-brand">
-        TISSO VISION
-    </div>
-    <div>Find the ideal gift for your loved ones.</div>
-    <div>choose gift <span><img src="{{ 'Arrow 1.png' |  asset_url }}" width="24px" height=""/> </span></div>
+        <label class="menu-toggle-label" for="menu-toggle-btn">
+            <span></span>
+            <span></span>
+            <span></span>
+        </label>
+
+        <div class="top-banner-brand">
+            {% if section.settings.logo_img != blank %}
+                {{ section.settings.logo_img | image_url: width: 200 | image_tag: class: 'logo-img' }}
+            {% else %}
+                {{ section.settings.logo_text }}
+            {% endif %}
+        </div>
+        <div class="top-banner-tagline">
+            {{ section.settings.tagline_text }}
+        </div>
+        
+        <div class="top-banner-btn">
+            {{ top_banner_btn }}
+        </div>
+        {% comment %} Mobile Menu Drawer {% endcomment %}
+        <div class="mobile-menu-drawer">
+            <div class="top-banner-tagline">
+                {{ section.settings.tagline_text }}
+            </div>
+            <div class="top-banner-btn">
+            {{ top_banner_btn }}
+            </div>
+        </div>
+        </div>
+
+
 </section>
 
 {% schema %}
 {
     "name": "Custom Main Section",
     "settings": [
-        
-        ],
+        {
+            "type": "header",
+            "content": "Top Banner"
+        },
+        {
+            "type": "image_picker",
+            "id": "logo_img",
+            "label": "Logo Image"
+        },
+        {
+            "type": "text",
+            "id": "logo_text",
+            "label": "Brand Text",
+            "default": "TISSO VISION",
+            "info": "Note: If an image is uploaded, it will override the text."
+        },
+        {
+            "type": "text",
+            "id": "tagline_text",
+            "label": "TagLine Top Banner",
+            "default": "Find the ideal gift for your loved ones."
+        },
+        {
+            "type": "text",
+            "id": "top_banner_btn_text",
+            "label": "Button Label",
+            "default": "choose gift"
+        },
+        {
+            "type": "url",
+            "id": "top_banner_btn_link",
+            "label": "Button Link",
+        }
+    ],
     "presets": [{ "name": "Custom Main Section"}]    
 }
 {% endschema %}
