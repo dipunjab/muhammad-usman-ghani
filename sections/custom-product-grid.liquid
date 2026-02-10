@@ -125,7 +125,7 @@
 
           const itemsToAdd = [{ id: currentVariantId, quantity: 1 }];
 
-          Logic: Check if current selection is "Black" and "Medium"
+          {% comment %} Logic: Check if current selection is "Black" and "Medium" {% endcomment %}
           const currentVariant = productData.variants.find(v => v.id == currentVariantId);
           
           const isBlackMedium = currentVariant.options.some(opt => opt.toLowerCase() === 'black') && 
