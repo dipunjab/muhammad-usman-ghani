@@ -1,0 +1,262 @@
+{%- style -%}
+  .custom-grid-section {
+    padding: 60px 0;
+    background: #fff;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+  }
+
+  .custom-grid__title {
+    width: 100%;
+    max-width: 1340px; 
+    padding: 0 20px;
+    font-family: "Jost", sans-serif;
+    font-size: 32px;
+    font-weight: 400;
+    margin-bottom: 30px;
+    text-align: left;
+  }
+
+  .custom-grid__container {
+    display: grid;
+    grid-template-columns: repeat(3, 433px);
+    gap: 20px;
+    justify-content: center;
+    width: 100%;
+  }
+
+  @media (max-width: 1340px) {
+    .custom-grid__container {
+      grid-template-columns: repeat(3, 1fr);
+      padding: 0 20px;
+    }
+  }
+
+  @media (max-width: 900px) {
+    .custom-grid-section {
+      padding: 40px 0;
+    }
+    .custom-grid__container {
+      grid-template-columns: repeat(2, 169px);
+      gap: 15px;
+      justify-content: center;
+    }
+    .custom-grid__title {
+      font-size: 24px;
+      text-align: center;
+      padding: 0 20px;
+    }
+  }
+{%- endstyle -%}
+
+<section class="custom-grid-section">
+  <div class="custom-grid__title">{{ section.settings.title }}</div>
+  <div class="custom-grid__container">
+    {%- for block in section.blocks -%}
+      {%- assign product_ref = all_products[block.settings.product] -%}
+      {%- render 'custom-product-card', 
+          card_product: product_ref, 
+          pos_x: block.settings.pos_x, 
+          pos_y: block.settings.pos_y 
+      -%}
+    {%- endfor -%}
+  </div>
+</section>
+{% render 'custom-product-modal' %}
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+    const modal = document.getElementById('ProductQuickView');
+    const target = document.getElementById('AjaxModalTarget');
+
+    function initModalVariantLogic(container) {
+        const jsonStr = container.querySelector('[id^="ProductJson-"]')?.textContent;
+        if (!jsonStr) return;
+
+        const productData = JSON.parse(jsonStr);
+        const form = container.querySelector('#AjaxAddToCartForm');
+        if (!form) return;
+
+        let currentVariantId = productData.variants[0].id;
+
+        container.addEventListener('change', (e) => {
+        if (!e.target.classList.contains('variant-selector')) return;
+
+        const selectedOptions = [];
+        const groups = container.querySelectorAll('.option-group');
+
+        groups.forEach(group => {
+            const radio = group.querySelector('input[type="radio"]:checked');
+            const select = group.querySelector('select');
+            if (radio) selectedOptions.push(radio.value);
+            else if (select) selectedOptions.push(select.value);
+        });
+
+        const variant = productData.variants.find(v =>
+            v.options.every((val, i) => val === selectedOptions[i])
+        );
+
+        if (variant) {
+            currentVariantId = variant.id;
+
+            const input = form.querySelector('input[name="id"]');
+            if (input) input.value = variant.id;
+
+            const priceEl = container.querySelector('#ModalPrice');
+            if (priceEl) priceEl.textContent = `$${(variant.price / 100).toFixed(2)}`;
+
+            const img = container.querySelector('#MainModalImage');
+            if (variant.featured_image && img) img.src = variant.featured_image.src;
+
+            const btn = form.querySelector('button');
+            btn.disabled = !variant.available;
+            btn.querySelector('span').innerText = variant.available ? "ADD TO CART" : "SOLD OUT";
+        }
+        });
+
+       // Add to cart logic with "Soft Winter Jacket" bonus
+      form.addEventListener('submit', async (e) => {
+          e.preventDefault();
+          const btn = form.querySelector('button');
+          const originalBtnContent = btn.innerHTML;
+          btn.innerHTML = "ADDING...";
+
+          const itemsToAdd = [{ id: currentVariantId, quantity: 1 }];
+
+          Logic: Check if current selection is "Black" and "Medium"
+          const currentVariant = productData.variants.find(v => v.id == currentVariantId);
+          
+          const isBlackMedium = currentVariant.options.some(opt => opt.toLowerCase() === 'black') && 
+                                currentVariant.options.some(opt => opt.toLowerCase() === 'm');
+
+          if (isBlackMedium) {
+              try {
+                  const jacketRes = await fetch('/products/dark-winter-jacket.js');
+                  if (jacketRes.ok) {
+                      const jacketData = await jacketRes.json();
+                      itemsToAdd.push({
+                          id: jacketData.variants[0].id,
+                          quantity: 1
+                      });
+                  }
+              } catch (err) {
+                  console.error("Could not find Soft Winter Jacket", err);
+              }
+          }
+
+          fetch('/cart/add.js', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ items: itemsToAdd })
+          })
+          .then(res => {
+              if (!res.ok) throw new Error('Failed to add to cart');
+              window.location.href = '/cart';
+          })
+          .catch(err => {
+              btn.innerHTML = "ERROR - TRY AGAIN";
+              setTimeout(() => { btn.innerHTML = originalBtnContent; }, 2000);
+              console.error(err);
+          });
+      });
+    }
+
+    // Listen for opening modal
+    document.addEventListener('click', async (e) => {
+        const trigger = e.target.closest('[data-open-popup]');
+        if (!trigger) return;
+
+        const handle = trigger.getAttribute('data-open-popup');
+        if (!handle) return alert("Product handle missing!");
+
+        modal.classList.add('is-active');
+        target.innerHTML = '<div style="padding:50px; text-align:center;">Loading...</div>';
+
+        try {
+        const res = await fetch(`/products/${handle}?section_id=ajax-product-view`);
+        if (!res.ok) throw new Error('Failed to fetch product section');
+
+        const html = await res.text();
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(html, 'text/html');
+        const content = doc.querySelector('.shopify-section') || doc.querySelector('[id^="shopify-section"]');
+
+        if (content) {
+            target.innerHTML = content.innerHTML;
+            initModalVariantLogic(target); 
+        } else {
+            target.innerHTML = "Error: Section content missing.";
+        }
+        } catch (err) {
+        console.error(err);
+        target.innerHTML = `Error: ${err.message}`;
+        }
+    });
+
+    // Close modal
+    document.addEventListener('click', (e) => {
+        if (e.target.closest('[data-close-modal]')) modal.classList.remove('is-active');
+    });
+    });
+</script>
+
+
+{% schema %}
+{
+  "name": "Custom Grid",
+  "max_blocks": 6,
+  "settings": [
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Heading",
+      "default": "Tisso vison in the wild"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "product_block",
+      "name": "Product",
+      "settings": [
+        {
+          "type": "product",
+          "id": "product",
+          "label": "Select Product"
+        },
+        {
+          "type": "range",
+          "id": "pos_x",
+          "min": 0,
+          "max": 100,
+          "step": 1,
+          "unit": "%",
+          "label": "Hotspot X",
+          "default": 50
+        },
+        {
+          "type": "range",
+          "id": "pos_y",
+          "min": 0,
+          "max": 100,
+          "step": 1,
+          "unit": "%",
+          "label": "Hotspot Y",
+          "default": 50
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Custom Grid",
+      "blocks": [
+        { "type": "product_block" },
+        { "type": "product_block" },
+        { "type": "product_block" }
+      ]
+    }
+  ]
+}
+{% endschema %}
