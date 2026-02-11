@@ -34,13 +34,25 @@
                 {% endfor %}
               </div>
             {% else %}
-              <div class="custom-select-wrapper">
-                <select name="options[{{ option.name }}]" class="variant-selector custom-select">
-                  <option value="" disabled>Choose {{ option.name }}</option>
+              <div class="custom-select-wrapper" data-custom-dropdown>
+                
+                <div class="custom-dropdown-trigger">
+                  <span class="dropdown-text">Choose {{ option.name }}</span>
+                  <img src="{{ 'Vector.png' | asset_url }}" class="dropdown-arrow-icon" alt="▼" width="12" height="12">
+                </div>
+
+                <div class="custom-dropdown-options">
                   {% for value in option.values %}
-                    <option value="{{ value | escape }}" {% if option.selected_value == value %}selected{% endif %}>
+                    <div class="custom-option-item" data-value="{{ value | escape }}">
                       {{ value }}
-                    </option>
+                    </div>
+                  {% endfor %}
+                </div>
+
+                <select name="options[{{ option.name }}]" class="variant-selector hidden-native-select" style="display: none;">
+                  <option value="" disabled selected>Choose {{ option.name }}</option>
+                  {% for value in option.values %}
+                    <option value="{{ value | escape }}">{{ value }}</option>
                   {% endfor %}
                 </select>
               </div>

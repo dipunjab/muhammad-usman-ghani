@@ -72,6 +72,46 @@
     const target = document.getElementById('AjaxModalTarget');
 
     function initModalVariantLogic(container) {
+
+        // --- Custom Dropdown Logic ---
+        const dropdowns = container.querySelectorAll('[data-custom-dropdown]');
+        console.log("hey")
+        dropdowns.forEach(dropdown => {
+            const trigger = dropdown.querySelector('.custom-dropdown-trigger');
+            const hiddenSelect = dropdown.querySelector('.hidden-native-select');
+            const textSpan = dropdown.querySelector('.dropdown-text');
+            const options = dropdown.querySelectorAll('.custom-option-item');
+
+            trigger.addEventListener('click', (e) => {
+                e.stopPropagation();
+                dropdowns.forEach(d => {
+                    if(d !== dropdown) d.classList.remove('is-open');
+                });
+                dropdown.classList.toggle('is-open');
+            });
+
+            options.forEach(option => {
+                option.addEventListener('click', () => {
+                    const value = option.getAttribute('data-value');
+                    const displayText = option.innerText;
+
+                    textSpan.innerText = displayText;
+                    dropdown.classList.remove('is-open');
+                    
+                    options.forEach(opt => opt.classList.remove('selected'));
+                    option.classList.add('selected');
+
+                    hiddenSelect.value = value;
+                    hiddenSelect.dispatchEvent(new Event('change', { bubbles: true }));
+                });
+            });
+        });
+
+        document.addEventListener('click', () => {
+            dropdowns.forEach(d => d.classList.remove('is-open'));
+        });
+        // --- Custom Dropdown Logic END---
+
         const jsonStr = container.querySelector('[id^="ProductJson-"]')?.textContent;
         if (!jsonStr) return;
 
@@ -97,7 +137,6 @@
         const variant = productData.variants.find(v =>
             v.options.every((val, i) => val === selectedOptions[i])
         );
-
         if (variant) {
             currentVariantId = variant.id;
 
@@ -125,7 +164,7 @@
 
           const itemsToAdd = [{ id: currentVariantId, quantity: 1 }];
 
-          Logic: Check if current selection is "Black" and "Medium"
+          {% comment %} Logic: Check if current selection is "Black" and "Medium" {% endcomment %}
           const currentVariant = productData.variants.find(v => v.id == currentVariantId);
           
           const isBlackMedium = currentVariant.options.some(opt => opt.toLowerCase() === 'black') && 
@@ -161,6 +200,7 @@
               console.error(err);
           });
       });
+      
     }
 
     // Listen for opening modal

@@ -20,14 +20,14 @@
     background: #fff; 
     width: 311px; 
     height: 447px; 
-    padding: 20px;
+    padding: 15px;
     position: relative; 
     box-sizing: border-box;
     overflow: hidden;
   }
   
   .qv-close { 
-    position: absolute; top: 10px; right: 15px; font-size: 24px; 
+    position: absolute; top: 3px; right: 12px; font-size: 24px; 
     background: none; border: none; cursor: pointer; font-weight: 300; z-index: 10;
   }
   
@@ -91,22 +91,105 @@
   
   .color-indicator { width: 6px; height: 100%; margin-right: 10px; margin-left: -12px; }
   
-  .custom-select-wrapper { 
-    width: 271px; height: 40.44px; border: 1px solid #000; position: relative;
-  }
-  .custom-select { 
-    width: 100%; height: 100%; padding: 0 15px; border: none; outline: none; 
-    appearance: none; font-family: 'Jost', sans-serif; font-size: 15px;
-  }
-  .custom-select-wrapper::after {
-    content: "∨"; position: absolute; right: 15px; top: 50%; transform: translateY(-50%);
-    pointer-events: none; font-size: 18px; font-weight: 300;
+/* Wrapper for the custom dropdown */
+  .custom-select-wrapper {
+    display: block; 
+    width: 271px; 
+    height: 40px; 
+    border: 1px solid #000; 
+    position: relative;
+    cursor: pointer;
+    background: #fff;
+    font-family: 'Jost', sans-serif;
   }
 
+  /* The Button/Trigger User Clicks */
+  .custom-dropdown-trigger {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start; /* Aligns text to left like input */
+    padding-left: 15px;
+    position: relative;
+  }
+
+  .dropdown-text {
+    font-size: 15px;
+    color: #000;
+  }
+
+  /* The Arrow Image from Assets */
+  .dropdown-arrow-icon {
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    pointer-events: none;
+    transition: transform 0.3s ease;
+  }
+
+  /* Rotate arrow when open */
+  .custom-select-wrapper.is-open .dropdown-arrow-icon {
+    transform: translateY(-50%) rotate(180deg);
+  }
+
+  /* The Dropdown List (Matches your image: Clean, Centered, White) */
+  .custom-dropdown-options {
+    position: absolute;
+    top: 100%; /* Appears directly below */
+    left: -1px; /* Aligns with border */
+    width: calc(100% + 2px); /* Matches width including borders */
+    background: #fff;
+    border: 1px solid #000;
+    border-top: none;
+    z-index: 100;
+    display: none; /* Hidden by default */
+    max-height: 200px;
+    overflow-y: auto;
+  }
+
+  .custom-select-wrapper.is-open .custom-dropdown-options {
+    display: block !important;
+  }
+
+  /* Individual Options (XS, S, M) */
+  .custom-option-item {
+    padding: 12px 0;
+    text-align: center; /* Centered like your image */
+    font-size: 14px;
+    color: #000;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+
+  .custom-option-item:hover {
+    background-color: #f2f2f2;
+  }
+  
+  /* Highlight selected option style */
+  .custom-option-item.selected {
+    background-color: #000;
+    color: #fff;
+  }
   .modal-atc-btn {
     width: 271px; background: #000; color: #fff; height: 50px; 
     display: flex; align-items: center; justify-content: space-between;
     padding: 0 20px; border: none; cursor: pointer; margin-top: 20px;
   }
   .atc-arrow { font-size: 24px; font-weight: 200; }
+
+  /* Added Css for Checked swatch */
+  .variant-selector:checked + .swatch-label {
+    background-color: #000;
+    color: #fff;
+    transition: all 0.2s ease;
+  }
+
+  .swatch-item:hover .swatch-label {
+    background-color: #f9f9f9;
+  }
+  .swatch-item:hover .variant-selector:checked + .swatch-label {
+    background-color: #000; 
+  }
 </style>
