@@ -120,15 +120,30 @@
   }
 
   /* The Arrow Image from Assets */
-  .dropdown-arrow-icon {
-    position: absolute;
-    right: 15px;
-    top: 50%;
-    transform: translateY(-50%);
-    pointer-events: none;
-    transition: transform 0.3s ease;
-  }
+.dropdown-icon-wrapper {
+  position: absolute;
+  right: 0;
+  top: 0;
+  height: 100%;
+  width: 40px; 
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-left: 1px solid #000; 
+}
 
+.dropdown-arrow-icon {
+  pointer-events: none;
+  transition: transform 0.3s ease;
+  width: 12px;
+  height: 6px;
+}
+
+.dropdown-text {
+  font-size: 15px;
+  color: #000;
+  padding-right: 45px; 
+}
   /* Rotate arrow when open */
   .custom-select-wrapper.is-open .dropdown-arrow-icon {
     transform: translateY(-50%) rotate(180deg);
@@ -142,7 +157,6 @@
     width: calc(100% + 2px); /* Matches width including borders */
     background: #fff;
     border: 1px solid #000;
-    border-top: none;
     z-index: 100;
     display: none; /* Hidden by default */
     max-height: 200px;
